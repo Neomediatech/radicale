@@ -27,6 +27,6 @@ VOLUME ["/data"]
 
 CMD radicale -S -C /radicale.conf
 
-HEALTHCHECK CMD curl -f -L http://localhost:5232/ || exit 1
+#HEALTHCHECK CMD curl -f -L http://localhost:5232/ || exit 1
 RUN echo $VERSION >> /version
 
