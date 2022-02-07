@@ -13,20 +13,26 @@ LABEL maintainer="docker-dario@neomediatech.it" \
 RUN set -ex; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
-        python3 python3-pip bash curl \
-    ; \
+        python3 python3-pip bash curl && \
     pip3 install --upgrade pip && \
     pip3 install radicale~=3.0 && \
-    pip3 install --upgrade https://github.com/Unrud/RadicaleIMAP/archive/master.tar.gz
-#    python3 -m pip install --upgrade https://github.com/Unrud/RadicaleIMAP/archive/master.tar.gz
+    pip3 install --upgrade https://github.com/Unrud/RadicaleIMAP/archive/master.tar.gz && \
+    pip3 install --upgrade https://github.com/Unrud/RadicaleInfCloud/archive/master.tar.gz
+    # from Radicale developer repo
 
 COPY radicale.conf /radicale.conf
+COPY entrypoint.sh /entrypoint.sh
 
 EXPOSE 5232/tcp
 VOLUME ["/data"]
 
-CMD radicale -S -C /radicale.conf
+#CMD radicale -S -C /data/radicale.conf
 
-#HEALTHCHECK CMD curl -f -L http://localhost:5232/ || exit 1
-RUN echo $VERSION >> /version
+HEALTHCHECK --interval=60s --timeout=30s --start-period=10s --retries=5 CMD curl -I -s -L http://localhost:5232/.web/ || exit 1
+
+RUN radicale --version >> /version ; \
+    chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/tini","--","radicale","-S","-C","/data/radicale.conf"]
 
