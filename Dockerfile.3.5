@@ -1,0 +1,58 @@
+FROM ghcr.io/neomediatech/ubuntu-base:24.04
+
+ENV SERVICE=radicale \
+    RADICALE_CONFIG=/radicale.conf
+
+LABEL maintainer="docker-dario@neomediatech.it" \ 
+      org.label-schema.vcs-type=Git \
+      org.label-schema.vcs-url=https://github.com/Neomediatech/${SERVICE} \
+      org.label-schema.maintainer=Neomediatech
+
+RUN set -ex; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        pipx bash curl jq wget unzip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
+
+RUN set -ex; \
+    user_info="$(getent passwd 1000)" || echo "";\
+    if [ "$user_info" != "" ]; then \
+      username="$(echo "$user_info" | cut -d: -f1)";\
+      if [ "$username" != "" ]; then \
+        userdel -r "$username"; \
+      fi;\
+    fi;\
+    groupadd -g 1000 radicale && \
+    useradd -m -d /var/lib/radicale --system --uid 1000 -g radicale radicale && \
+    touch /version && chmod 666 /version && \
+    mkdir -p /app && chown radicale:radicale /app && \
+    ln -s /app/bin/radicale /usr/local/bin/radicale
+
+RUN VER="$(curl -s -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Kozea/Radicale/releases/latest" | \
+           jq -r '.tag_name' | \
+           sed 's/v//')" && \
+    export PIPX_HOME=/app && \
+    export PIPX_BIN_DIR=/app/bin && \
+    pipx install radicale~=${VER} && \
+    pipx ensurepath && \
+    radicale --version >> /version
+
+USER root
+RUN wget -P /tmp/ https://inf-it.com/open-source/download/InfCloud_0.13.1.zip && \
+    unzip -d /app/venvs/radicale/lib/*/site-packages/radicale/web/internal_data/ /tmp/InfCloud_0.13.1.zip && \
+    rm -f /tmp/InfCloud_0.13.1.zip
+
+COPY radicale.3.5.conf /radicale.conf
+COPY --chmod=755 entrypoint.3.5.sh /entrypoint.sh
+
+USER radicale
+
+EXPOSE 5232/tcp
+VOLUME ["/data"]
+
+HEALTHCHECK --interval=60s --timeout=30s --start-period=10s --retries=5 CMD curl -I -s -L http://localhost:5232/.web/ || exit 1
+
+ENTRYPOINT ["/tini","--","/entrypoint.sh"]
+CMD ["radicale","-S"]
+
