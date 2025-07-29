@@ -1,1 +1,2 @@
 mar 29 lug 2025, 19:25:16, UTC --- ghcr.io/neomediatech/radicale:3.5 UPDATED
+mar 29 lug 2025, 19:27:58, UTC --- ghcr.io/neomediatech/radicale:3.1 UPDATED
