@@ -1,4 +1,2 @@
 -----------------------------------
-mer 30 lug 2025, 08:31:44, UTC --- ghcr.io/neomediatech/radicale:3.5 NOT SCANNED
------------------------------------
-mer 30 lug 2025, 08:32:10, UTC --- ghcr.io/neomediatech/radicale:3.1 NOT SCANNED
+mer 30 lug 2025, 09:10:32, UTC --- ghcr.io/neomediatech/radicale:3.5 NOT SCANNED
