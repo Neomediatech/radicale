@@ -1,2 +1,1 @@
-mar 29 lug 2025, 19:25:38, UTC --- ghcr.io/neomediatech/radicale:3.5 UPDATED (image build needed: true)
-mar 29 lug 2025, 19:28:27, UTC --- ghcr.io/neomediatech/radicale:3.1 UPDATED (image build needed: true)
+mer 30 lug 2025, 08:31:44, UTC --- ghcr.io/neomediatech/radicale:3.5 not-needed (image build needed: false)
