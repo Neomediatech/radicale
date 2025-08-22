@@ -3,15 +3,17 @@ FROM ghcr.io/neomediatech/ubuntu-base:24.04
 ENV SERVICE=radicale \
     RADICALE_CONFIG=/radicale.conf
 
-LABEL maintainer="docker-dario@neomediatech.it" \ 
-      org.label-schema.vcs-type=Git \
-      org.label-schema.vcs-url=https://github.com/Neomediatech/${SERVICE} \
-      org.label-schema.maintainer=Neomediatech
+LABEL org.opencontainers.image.source=https://github.com/Neomediatech/${SERVICE}
+
+ARG BIN_SOURCE=https://github.com/Neomediatech/assets/raw/refs/heads/main/bin
+ADD --chmod=777 ${BIN_SOURCE}/jq \
+                ${BIN_SOURCE}/unzip \
+                /usr/local/bin/
 
 RUN set -ex; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
-        pipx bash curl jq wget unzip && \
+        pipx && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
 
