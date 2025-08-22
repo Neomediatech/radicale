@@ -1,0 +1,2 @@
+ven 22 ago 2025, 17:46:50, CEST --- ghcr.io/neomediatech/radicale:3.5 done (image build needed: true)
+ven 22 ago 2025, 17:47:00, CEST --- ghcr.io/neomediatech/radicale:3.1 done (image build needed: true)
